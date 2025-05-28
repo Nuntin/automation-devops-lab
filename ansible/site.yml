@@ -1,0 +1,40 @@
+- name: Configure DevOps EC2 instance
+  hosts: devops
+  become: true
+
+  tasks:
+    - name: Update all packages
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Install Docker
+      yum:
+        name: docker
+        state: present
+
+    - name: Start & enable Docker
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Install pip3
+      yum:
+        name: python3-pip
+        state: present
+
+    - name: Install docker-compose
+      pip:
+        name: docker-compose
+
+    - name: Install Nginx
+      yum:
+        name: nginx
+        state: present
+
+    - name: Start & enable Nginx
+      service:
+        name: nginx
+        state: started
+        enabled: true
