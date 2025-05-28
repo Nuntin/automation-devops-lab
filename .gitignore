@@ -1,0 +1,24 @@
+# Terraform
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# Ansible
+*.retry
+
+# Python
+__pycache__/
+*.pyc
+
+# VSCode or IDEs
+.vscode/
+.idea/
+
+# Logs & temp
+*.log
+*.out
+*.swp
+
+# Secrets 
+*.pem
+.env
