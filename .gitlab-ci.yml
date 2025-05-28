@@ -1,0 +1,47 @@
+stages:
+  - terraform_plan
+  - terraform_apply
+  - ansible_configure
+  - docker_deploy
+  - monitoring_setup
+
+variables:
+  TF_IN_AUTOMATION: "true"
+  ANSIBLE_HOST_KEY_CHECKING: "False"
+
+before_script:
+  - echo "Starting CI/CD flow..."
+
+terraform_plan:
+  stage: terraform_plan
+  script:
+    - cd terraform
+    - terraform init -input=false
+    - terraform plan -out=tfplan.out
+  artifacts:
+    paths:
+      - terraform/tfplan.out
+
+terraform_apply:
+  stage: terraform_apply
+  script:
+    - cd terraform
+    - terraform apply -auto-approve tfplan.out
+
+ansible_configure:
+  stage: ansible_configure
+  script:
+    - cd ansible
+    - ansible-playbook -i inventory.ini site.yml
+
+docker_deploy:
+  stage: docker_deploy
+  script:
+    - cd docker-compose
+    - docker-compose up -d
+
+monitoring_setup:
+  stage: monitoring_setup
+  script:
+    - cd monitoring
+    - docker-compose up -d
