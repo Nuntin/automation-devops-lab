@@ -2,20 +2,10 @@ provider "aws" {
   region = var.region
 }
 
-resource "aws_instance" "devops_lab" {
-  ami                    = "ami-0df7a207adb9748c7" # Amazon Linux 2 (Singapore)
-  instance_type          = var.instance_type
-  key_name               = var.key_name
-  vpc_security_group_ids = [aws_security_group.allow_basic.id]
-
-  tags = {
-    Name = "devops-lab-instance"
-  }
-}
-
-resource "aws_security_group" "allow_basic" {
+resource "aws_security_group" "devops_sg" {
   name        = "devops-lab-sg"
-  description = "Allow SSH and HTTP/S access"
+  description = "Allow SSH, HTTP, and Prometheus/Grafana access"
+  vpc_id      = var.vpc_id
 
   ingress {
     description = "SSH"
@@ -34,9 +24,16 @@ resource "aws_security_group" "allow_basic" {
   }
 
   ingress {
-    description = "HTTPS"
-    from_port   = 443
-    to_port     = 443
+    description = "Grafana/Prometheus"
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 9090
+    to_port     = 9090
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -49,6 +46,14 @@ resource "aws_security_group" "allow_basic" {
   }
 }
 
-output "instance_ip" {
-  value = aws_instance.devops_lab.public_ip
+resource "aws_instance" "devops_lab" {
+  ami                         = var.ami_id
+  instance_type               = var.instance_type
+  key_name                    = var.key_name
+  associate_public_ip_address = true
+  vpc_security_group_ids      = [aws_security_group.devops_sg.id]
+
+  tags = {
+    Name = "devops-lab-instance"
+  }
 }
