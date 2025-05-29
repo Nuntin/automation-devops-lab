@@ -1,0 +1,40 @@
+- name: Install Prometheus and Grafana
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install dependencies
+      apt:
+        name:
+          - wget
+          - apt-transport-https
+          - software-properties-common
+        state: present
+        update_cache: yes
+
+    - name: Add Grafana APT repo
+      apt_repository:
+        repo: "deb https://packages.grafana.com/oss/deb stable main"
+        state: present
+        filename: grafana
+
+    - name: Add Grafana GPG key
+      apt_key:
+        url: https://packages.grafana.com/gpg.key
+        state: present
+
+    - name: Install Grafana
+      apt:
+        name: grafana
+        state: present
+
+    - name: Install Prometheus (from .tar.gz)
+      shell: |
+        wget https://github.com/prometheus/prometheus/releases/download/v2.45.0/prometheus-2.45.0.linux-amd64.tar.gz
+        tar -xzf prometheus-2.45.0.linux-amd64.tar.gz
+        cp -r prometheus-2.45.0.linux-amd64 /opt/prometheus
+
+    - name: Start Grafana
+      service:
+        name: grafana-server
+        enabled: yes
+        state: started
