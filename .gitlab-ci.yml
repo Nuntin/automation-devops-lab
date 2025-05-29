@@ -2,8 +2,6 @@ stages:
   - terraform_plan
   - terraform_apply
   - ansible_configure
-  - docker_deploy
-  - monitoring_setup
 
 variables:
   TF_IN_AUTOMATION: "true"
@@ -32,16 +30,4 @@ ansible_configure:
   stage: ansible_configure
   script:
     - cd ansible
-    - ansible-playbook -i inventory.ini site.yml
-
-docker_deploy:
-  stage: docker_deploy
-  script:
-    - cd docker-compose
-    - docker-compose up -d
-
-monitoring_setup:
-  stage: monitoring_setup
-  script:
-    - cd monitoring
-    - docker-compose up -d
+    - ansible-playbook -i aws_ec2_inventory.py prometheus_grafana.yml
