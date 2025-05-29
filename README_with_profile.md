@@ -18,7 +18,7 @@ This repository (`automation-devops-lab`) contains real DevOps setup examples wi
 
 ### 📬 Contact
 - GitHub: [github.com/Nuntin](https://github.com/Nuntin)
-- LinkedIn: (ใส่ลิงก์ของคุณ)
-- Email: (ใส่ถ้าต้องการ)
+- LinkedIn: https://www.linkedin.com/in/nuntin-padmadin-97b708145/
+- Email: nuntin.p@gmail.com
 
 > If you're hiring or want to collaborate, feel free to reach out! 🙏
